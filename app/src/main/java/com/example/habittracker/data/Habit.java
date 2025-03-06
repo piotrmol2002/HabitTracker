@@ -18,11 +18,12 @@ public class Habit {
     @ColumnInfo(name = "end_date")
     private LocalDate endDate;
 
-    public Habit(String name, boolean isCompleted, int frequency, String description) {
+    public Habit(String name, boolean isCompleted, int frequency, String description, org.threeten.bp.LocalDate endDate) {
         this.name = name;
         this.isCompleted = isCompleted;
         this.frequency = frequency;
         this.description = description;
+        this.endDate = endDate;
     }
 
     public int getId() { return id; }

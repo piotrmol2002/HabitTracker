@@ -1,15 +1,18 @@
 package com.example.habittracker.ui;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.habittracker.R;
 import com.example.habittracker.data.Habit;
 import com.example.habittracker.data.HabitDatabase;
+
 import java.util.concurrent.Executors;
 
 public class AddHabitActivity extends AppCompatActivity {
@@ -17,7 +20,8 @@ public class AddHabitActivity extends AppCompatActivity {
     private Spinner spinnerFrequency;
     private static final int[] FREQUENCY_VALUES = {1, 2, 3, 4, 5, 6, 7, 14, 28};
     private EditText editTextHabitDescription;
-
+    private org.threeten.bp.LocalDate selectedEndDate;
+    private TextView textViewEndDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,13 +39,32 @@ public class AddHabitActivity extends AppCompatActivity {
         spinnerFrequency.setAdapter(adapter);
 
         Button buttonSaveHabit = findViewById(R.id.button_save_habit);
-
         buttonSaveHabit.setOnClickListener(v -> saveHabit());
+
+        textViewEndDate = findViewById(R.id.text_view_end_date);
+        Button buttonPickDate = findViewById(R.id.button_pick_end_date);
+        buttonPickDate.setOnClickListener(v -> showDatePickerDialog());
     }
+
+    private void showDatePickerDialog() {
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                this,
+                (view, year, month, dayOfMonth) -> {
+                    selectedEndDate = org.threeten.bp.LocalDate.of(year, month + 1, dayOfMonth);
+                    textViewEndDate.setText(selectedEndDate.toString());
+                },
+                org.threeten.bp.LocalDate.now().getYear(),
+                org.threeten.bp.LocalDate.now().getMonthValue() - 1,
+                org.threeten.bp.LocalDate.now().getDayOfMonth()
+        );
+        datePickerDialog.show();
+    }
+
 
     private void saveHabit() {
         String habitName = editTextHabitName.getText().toString().trim();
         String habitDescription = editTextHabitDescription.getText().toString().trim();
+        org.threeten.bp.LocalDate endDate = selectedEndDate;
 
         if (habitName.isEmpty()) {
             Toast.makeText(this, "Wpisz nazwę nawyku!", Toast.LENGTH_SHORT).show();
@@ -53,7 +76,7 @@ public class AddHabitActivity extends AppCompatActivity {
         }
 
         int selectedFrequency = FREQUENCY_VALUES[spinnerFrequency.getSelectedItemPosition()];
-        Habit newHabit = new Habit(habitName, false, selectedFrequency, habitDescription);
+        Habit newHabit = new Habit(habitName, false, selectedFrequency, habitDescription, endDate);
 
 
         Executors.newSingleThreadExecutor().execute(() -> {
