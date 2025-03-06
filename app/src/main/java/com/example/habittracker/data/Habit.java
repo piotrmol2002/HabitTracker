@@ -3,6 +3,9 @@ package com.example.habittracker.data;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+
+import org.threeten.bp.LocalDate;
 
 @Entity(tableName = "habit_table")
 public class Habit {
@@ -11,6 +14,9 @@ public class Habit {
     private final String name;
     private boolean isCompleted;
     private String description;
+    @TypeConverters(DateConverter.class)
+    @ColumnInfo(name = "end_date")
+    private LocalDate endDate;
 
     public Habit(String name, boolean isCompleted, int frequency, String description) {
         this.name = name;
@@ -38,6 +44,14 @@ public class Habit {
     }
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
     }
 
 }
