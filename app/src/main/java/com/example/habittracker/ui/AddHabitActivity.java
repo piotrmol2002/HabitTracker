@@ -12,7 +12,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.habittracker.R;
 import com.example.habittracker.data.Habit;
 import com.example.habittracker.data.HabitDatabase;
+import com.example.habittracker.data.HabitDay;
 
+import java.util.ArrayList;
 import java.util.concurrent.Executors;
 
 public class AddHabitActivity extends AppCompatActivity {
@@ -22,6 +24,7 @@ public class AddHabitActivity extends AppCompatActivity {
     private EditText editTextHabitDescription;
     private org.threeten.bp.LocalDate selectedEndDate;
     private TextView textViewEndDate;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +69,7 @@ public class AddHabitActivity extends AppCompatActivity {
         String habitDescription = editTextHabitDescription.getText().toString().trim();
         org.threeten.bp.LocalDate endDate = selectedEndDate;
 
+
         if (habitName.isEmpty()) {
             Toast.makeText(this, "Wpisz nazwę nawyku!", Toast.LENGTH_SHORT).show();
             return;
@@ -76,7 +80,17 @@ public class AddHabitActivity extends AppCompatActivity {
         }
 
         int selectedFrequency = FREQUENCY_VALUES[spinnerFrequency.getSelectedItemPosition()];
-        Habit newHabit = new Habit(habitName, false, selectedFrequency, habitDescription, endDate);
+
+        //tworzenie tablicy z habitDays
+        ArrayList<HabitDay> habitDays = new ArrayList<>();
+        org.threeten.bp.LocalDate currentDate = org.threeten.bp.LocalDate.now();
+        while (!currentDate.isAfter(endDate)) {
+            habitDays.add(new HabitDay(currentDate, false)); // Domyślnie isComplete = false
+            currentDate = currentDate.plusDays(selectedFrequency); // Przesunięcie daty o frequency dni
+        }
+
+
+        Habit newHabit = new Habit(habitName, false, selectedFrequency, habitDescription, endDate, habitDays);
 
 
         Executors.newSingleThreadExecutor().execute(() -> {
