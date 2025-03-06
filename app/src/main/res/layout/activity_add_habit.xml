@@ -15,16 +15,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/button_save_habit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Zapisz nawyk"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edit_text_habit_name"
-        android:layout_marginTop="16dp" />
-
     <EditText
         android:id="@+id/edit_text_habit_description"
         android:layout_width="0dp"
@@ -36,11 +26,21 @@
         app:layout_constraintTop_toBottomOf="@id/edit_text_habit_name"
         android:layout_marginTop="16dp" />
 
+    <Button
+        android:id="@+id/button_save_habit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Zapisz nawyk"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_text_habit_description"
+        android:layout_marginTop="16dp" />
+
     <Spinner
         android:id="@+id/spinner_frequency"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/edit_text_habit_description"
+        app:layout_constraintTop_toBottomOf="@id/button_save_habit"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp"/>
