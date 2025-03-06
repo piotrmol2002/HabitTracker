@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recycler_view_habits);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        habitAdapter = new HabitAdapter(new ArrayList<>());
+        habitAdapter = new HabitAdapter(new ArrayList<>(), habitViewModel);
         recyclerView.setAdapter(habitAdapter);
 
         habitViewModel = new ViewModelProvider(this).get(HabitViewModel.class);

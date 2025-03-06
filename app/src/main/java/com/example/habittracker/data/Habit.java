@@ -7,6 +7,8 @@ import androidx.room.TypeConverters;
 
 import org.threeten.bp.LocalDate;
 
+import java.util.ArrayList;
+
 @Entity(tableName = "habit_table")
 public class Habit {
     @PrimaryKey(autoGenerate = true)
@@ -17,13 +19,16 @@ public class Habit {
     @TypeConverters(DateConverter.class)
     @ColumnInfo(name = "end_date")
     private LocalDate endDate;
+    @TypeConverters(HabitDayConverter.class)
+    private ArrayList<HabitDay> habitDays;
 
-    public Habit(String name, boolean isCompleted, int frequency, String description, org.threeten.bp.LocalDate endDate) {
+    public Habit(String name, boolean isCompleted, int frequency, String description, org.threeten.bp.LocalDate endDate, ArrayList<HabitDay> habitDays) {
         this.name = name;
         this.isCompleted = isCompleted;
         this.frequency = frequency;
         this.description = description;
         this.endDate = endDate;
+        this.habitDays = habitDays;
     }
 
     public int getId() { return id; }
@@ -53,6 +58,14 @@ public class Habit {
 
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
+    }
+
+    public ArrayList<HabitDay> getHabitDays() {
+        return habitDays;
+    }
+
+    public void setHabitDays(ArrayList<HabitDay> habitDays) {
+        this.habitDays = new ArrayList<>(habitDays);  // Konwersja na ArrayList
     }
 
 }
