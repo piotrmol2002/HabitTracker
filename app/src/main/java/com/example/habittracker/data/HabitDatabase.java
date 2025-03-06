@@ -6,7 +6,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
-@Database(entities = {Habit.class}, version = 8)
+@Database(entities = {Habit.class}, version = 9)
 @TypeConverters({DateConverter.class, HabitDayConverter.class})
 public abstract class HabitDatabase extends RoomDatabase {
     public abstract HabitDao habitDao();

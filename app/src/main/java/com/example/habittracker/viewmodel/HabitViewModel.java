@@ -56,4 +56,7 @@ public class HabitViewModel extends AndroidViewModel {
         Executors.newSingleThreadExecutor().execute(() -> habitDao.update(habit));
     }
 
+    public void updateHabit(Habit habit) {
+        new Thread(() -> habitDao.update(habit)).start();
+    }
 }

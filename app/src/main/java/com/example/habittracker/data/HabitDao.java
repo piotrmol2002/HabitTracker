@@ -15,6 +15,7 @@ public interface HabitDao {
     @Update
     void update(Habit habit);
 
+
     @Query("SELECT * FROM habit_table ORDER BY id ASC")
     LiveData<List<Habit>> getAllHabits();
 }

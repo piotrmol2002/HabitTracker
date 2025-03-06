@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.habittracker.R;
-import com.example.habittracker.data.HabitDao;
 import com.example.habittracker.data.HabitDatabase;
 import com.example.habittracker.viewmodel.HabitViewModel;
 import com.jakewharton.threetenabp.AndroidThreeTen;
@@ -20,7 +19,6 @@ public class MainActivity extends AppCompatActivity {
     private HabitDatabase habitDatabase;
     private RecyclerView recyclerView;
     private HabitAdapter habitAdapter;
-    private HabitDao habitDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,14 +27,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Inicjalizacja bazy danych i habitDao
+        // Inicjalizacja bazy danych
         habitDatabase = HabitDatabase.getInstance(getApplicationContext());
-        habitDao = habitDatabase.habitDao();
 
         recyclerView = findViewById(R.id.recycler_view_habits);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        habitAdapter = new HabitAdapter(new ArrayList<>(), habitViewModel, habitDao);
+        habitAdapter = new HabitAdapter(new ArrayList<>(), habitViewModel);
         recyclerView.setAdapter(habitAdapter);
 
         habitViewModel = new ViewModelProvider(this).get(HabitViewModel.class);
