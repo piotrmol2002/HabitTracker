@@ -68,4 +68,10 @@ public class Habit {
         this.habitDays = new ArrayList<>(habitDays);  // Konwersja na ArrayList
     }
 
+    public boolean shouldAllowCheckboxForToday() {
+        org.threeten.bp.LocalDate today = org.threeten.bp.LocalDate.now();
+        // Można tu dodać dowolną logikę, np. czy dzisiaj przypada nawyk
+        return this.getEndDate() != null && !today.isAfter(this.getEndDate());
+    }
+
 }

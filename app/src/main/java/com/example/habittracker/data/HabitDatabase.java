@@ -6,12 +6,11 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
-@Database(entities = {Habit.class}, version = 6)
+@Database(entities = {Habit.class}, version = 8)
 @TypeConverters({DateConverter.class, HabitDayConverter.class})
 public abstract class HabitDatabase extends RoomDatabase {
-    private static HabitDatabase instance;
-
     public abstract HabitDao habitDao();
+    private static HabitDatabase instance;
 
     public static synchronized HabitDatabase getInstance(Context context) {
         if (instance == null) {

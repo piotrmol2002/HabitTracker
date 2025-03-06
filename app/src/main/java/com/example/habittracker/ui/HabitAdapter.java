@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.habittracker.R;
 import com.example.habittracker.data.Habit;
+import com.example.habittracker.data.HabitDao;
 import com.example.habittracker.data.HabitDay;
 import com.example.habittracker.viewmodel.HabitViewModel;
 
@@ -18,10 +19,12 @@ import java.util.List;
 public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.HabitViewHolder> {
     private final List<Habit> habitList;
     private final HabitViewModel viewModel;
+    private final HabitDao habitDao;
 
-    public HabitAdapter(List<Habit> habitList, HabitViewModel viewModel) {
+    public HabitAdapter(List<Habit> habitList, HabitViewModel viewModel, HabitDao habitDao) {
         this.habitList = habitList;
         this.viewModel = viewModel;
+        this.habitDao = habitDao;
     }
 
     @NonNull
@@ -37,27 +40,43 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.HabitViewHol
         Habit habit = habitList.get(position);
         holder.textViewHabitName.setText(habit.getName());
         holder.textViewHabitDescription.setText(habit.getDescription());
-        holder.textViewHabitName.setText(habit.getName());
-        holder.textViewEndDate.setText(habit.getEndDate().toString());
-        holder.checkBoxHabit.setChecked(habit.isCompleted());
+        holder.textViewEndDate.setText(habit.getEndDate() != null ? "End Date: " + habit.getEndDate().toString() : "No end date set");
 
-        if (habit.getEndDate() != null) {
-            String formattedEndDate = habit.getEndDate().toString(); // Zakładając, że masz endDate jako LocalDate
-            holder.textViewEndDate.setText("End Date: " + formattedEndDate);
-        } else {
-            holder.textViewEndDate.setText("No end date set");
-        }
         StringBuilder completionStatus = new StringBuilder();
         for (HabitDay habitDay : habit.getHabitDays()) {
-            completionStatus.append(habitDay.getDate().toString()).append(" - ").append(habitDay.isComplete() ? "Completed" : "Not Completed").append("\n");
+            completionStatus.append(habitDay.getDate().toString())
+                    .append(" - ")
+                    .append(habitDay.isComplete() ? "Completed" : "Not Completed")
+                    .append("\n");
         }
         holder.textViewCompletionStatus.setText(completionStatus.toString());
 
-        holder.checkBoxHabit.setOnClickListener(v -> {
+        // Ustawianie stanu checkboxa
+        holder.checkBoxHabit.setChecked(habit.isCompleted());
+
+        // Zarządzanie dostępnością checkboxa na podstawie daty
+        holder.checkBoxHabit.setEnabled(habit.shouldAllowCheckboxForToday()); // np. sprawdzenie, czy dzisiaj można zaznaczyć
+
+        // Obsługa kliknięcia checkboxa
+        holder.checkBoxHabit.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            // Zapewnia, że checkbox jest w stanie "zablokowany" po zaznaczeniu
+            if (isChecked) {
+                holder.checkBoxHabit.setEnabled(false); // Zablokowanie checkboxa po zaznaczeniu
+            }
+
+            // Aktualizacja stanu nawyku
             org.threeten.bp.LocalDate today = org.threeten.bp.LocalDate.now();
             viewModel.markHabitAsComplete(habit, today);
-            holder.checkBoxHabit.setEnabled(false); // zablokowanie checkboxa po zaznaczeniu
-        }); // ogarnac logike checkboxa
+
+            // Zaktualizowanie statusu w bazie danych (lub w pamięci)
+            habit.setCompleted(isChecked);
+            habitDao.update(habit);
+        });
+
+        // Obsługuje przypadek, kiedy checkbox nie powinien być dostępny (np. tylko w określone dni)
+        if (!habit.shouldAllowCheckboxForToday()) {
+            holder.checkBoxHabit.setClickable(false);  // Dodatkowo możemy uczynić checkbox nieklikalnym
+        }
 
     }
 
@@ -86,6 +105,7 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.HabitViewHol
             textViewHabitName = itemView.findViewById(R.id.text_view_habit_name);
             textViewHabitDescription = itemView.findViewById(R.id.text_view_habit_description);
             textViewEndDate = itemView.findViewById(R.id.text_view_end_date);
+            textViewCompletionStatus = itemView.findViewById(R.id.text_view_completion_status);
             checkBoxHabit = itemView.findViewById(R.id.checkBoxHabit);
         }
     }
