@@ -1,5 +1,6 @@
 package com.example.habittracker.data;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -8,21 +9,30 @@ public class Habit {
     @PrimaryKey(autoGenerate = true)
     private int id;
     private final String name;
-    private final String schedule; // np. "codziennie", "pon/wt/czw"
-    private boolean isCompleted; // Czy nawyk został wykonany dziś?
+    private boolean isCompleted;
 
-    public Habit(String name, String schedule, boolean isCompleted) {
+    public Habit(String name, boolean isCompleted, int frequency) {
         this.name = name;
-        this.schedule = schedule;
         this.isCompleted = isCompleted;
+        this.frequency = frequency;
     }
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
     public String getName() { return name; }
-    public String getSchedule() { return schedule; }
     public boolean isCompleted() { return isCompleted; }
-
     public void setCompleted(boolean completed) { isCompleted = completed; }
+
+    @ColumnInfo(name = "frequency")
+    private int frequency;
+
+    public int getFrequency() {
+        return frequency;
+    }
+
+    public void setFrequency(int frequency) {
+        this.frequency = frequency;
+    }
+
 }

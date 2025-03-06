@@ -1,8 +1,10 @@
 package com.example.habittracker.ui;
 
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.habittracker.R;
@@ -12,6 +14,9 @@ import java.util.concurrent.Executors;
 
 public class AddHabitActivity extends AppCompatActivity {
     private EditText editTextHabitName;
+    private Spinner spinnerFrequency;
+    private static final int[] FREQUENCY_VALUES = {1, 2, 3, 4, 5, 6, 7, 14, 28};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,6 +24,14 @@ public class AddHabitActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_habit);
 
         editTextHabitName = findViewById(R.id.edit_text_habit_name);
+
+        spinnerFrequency = findViewById(R.id.spinner_frequency);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item,
+                new String[]{"1 dzień", "2 dni", "3 dni", "4 dni", "5 dni", "6 dni", "Tydzień", "2 tygodnie", "4 tygodnie"});
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerFrequency.setAdapter(adapter);
+
         Button buttonSaveHabit = findViewById(R.id.button_save_habit);
 
         buttonSaveHabit.setOnClickListener(v -> saveHabit());
@@ -32,8 +45,9 @@ public class AddHabitActivity extends AppCompatActivity {
             return;
         }
 
-        // Ustawienie domyślnego harmonogramu ("codziennie") i statusu (nieukończony)
-        Habit newHabit = new Habit(habitName, "codziennie", false);
+        int selectedFrequency = FREQUENCY_VALUES[spinnerFrequency.getSelectedItemPosition()];
+        Habit newHabit = new Habit(habitName, false, selectedFrequency);
+
 
         Executors.newSingleThreadExecutor().execute(() -> {
             HabitDatabase.getInstance(this).habitDao().insertHabit(newHabit);

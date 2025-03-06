@@ -8,12 +8,10 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.habittracker.R;
-import com.example.habittracker.data.Habit;
 import com.example.habittracker.data.HabitDatabase;
 import com.example.habittracker.viewmodel.HabitViewModel;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private HabitViewModel habitViewModel;
