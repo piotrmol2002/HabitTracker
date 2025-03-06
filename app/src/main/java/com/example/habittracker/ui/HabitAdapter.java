@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.habittracker.R;
 import com.example.habittracker.data.Habit;
@@ -35,6 +36,14 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.HabitViewHol
     public int getItemCount() {
         return habitList.size();
     }
+
+    public void setHabits(List<Habit> newHabits) {
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new HabitDiffCallback(habitList, newHabits));
+        habitList.clear();
+        habitList.addAll(newHabits);
+        diffResult.dispatchUpdatesTo(this);
+    }
+
 
     public static class HabitViewHolder extends RecyclerView.ViewHolder {
         TextView textViewHabitName;

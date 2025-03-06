@@ -4,14 +4,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.habittracker.R;
 import com.example.habittracker.data.Habit;
 import com.example.habittracker.data.HabitDatabase;
+import com.example.habittracker.viewmodel.HabitViewModel;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    private HabitViewModel habitViewModel;
     private HabitDatabase habitDatabase;
     private RecyclerView recyclerView;
     private HabitAdapter habitAdapter;
@@ -21,27 +26,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        habitDatabase = HabitDatabase.getInstance(this);
         recyclerView = findViewById(R.id.recycler_view_habits);
-        Button buttonAdd = findViewById(R.id.button_add_habit);
-
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        habitAdapter = new HabitAdapter(new ArrayList<>());
+        recyclerView.setAdapter(habitAdapter);
+
+        habitViewModel = new ViewModelProvider(this).get(HabitViewModel.class);
+        habitViewModel.getAllHabits().observe(this, habits -> {
+            habitAdapter.setHabits(habits);  // Aktualizacja RecyclerView
+        });
+
+        Button buttonAdd = findViewById(R.id.button_add_habit);
         buttonAdd.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, AddHabitActivity.class);
             startActivity(intent);
         });
-
-        loadHabits();
-    }
-
-    private void loadHabits() {
-        new Thread(() -> {
-            List<Habit> habits = habitDatabase.habitDao().getAllHabits();
-            runOnUiThread(() -> {
-                habitAdapter = new HabitAdapter(habits);
-                recyclerView.setAdapter(habitAdapter);
-            });
-        }).start();
     }
 }
+
