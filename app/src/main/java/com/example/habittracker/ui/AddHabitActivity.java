@@ -16,6 +16,7 @@ public class AddHabitActivity extends AppCompatActivity {
     private EditText editTextHabitName;
     private Spinner spinnerFrequency;
     private static final int[] FREQUENCY_VALUES = {1, 2, 3, 4, 5, 6, 7, 14, 28};
+    private EditText editTextHabitDescription;
 
 
     @Override
@@ -24,6 +25,7 @@ public class AddHabitActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_habit);
 
         editTextHabitName = findViewById(R.id.edit_text_habit_name);
+        editTextHabitDescription = findViewById(R.id.edit_text_habit_description);
 
         spinnerFrequency = findViewById(R.id.spinner_frequency);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
@@ -39,14 +41,19 @@ public class AddHabitActivity extends AppCompatActivity {
 
     private void saveHabit() {
         String habitName = editTextHabitName.getText().toString().trim();
+        String habitDescription = editTextHabitDescription.getText().toString().trim();
 
         if (habitName.isEmpty()) {
             Toast.makeText(this, "Wpisz nazwę nawyku!", Toast.LENGTH_SHORT).show();
             return;
         }
+        if (habitDescription.isEmpty()) {
+            Toast.makeText(this, "Dodaj opis!", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         int selectedFrequency = FREQUENCY_VALUES[spinnerFrequency.getSelectedItemPosition()];
-        Habit newHabit = new Habit(habitName, false, selectedFrequency);
+        Habit newHabit = new Habit(habitName, false, selectedFrequency, habitDescription);
 
 
         Executors.newSingleThreadExecutor().execute(() -> {
