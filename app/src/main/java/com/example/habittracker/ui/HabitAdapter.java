@@ -31,6 +31,14 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.HabitViewHol
         Habit habit = habitList.get(position);
         holder.textViewHabitName.setText(habit.getName());
         holder.textViewHabitDescription.setText(habit.getDescription());
+        holder.textViewHabitName.setText(habit.getName());
+
+        if (habit.getEndDate() != null) {
+            String formattedEndDate = habit.getEndDate().toString(); // Zakładając, że masz endDate jako LocalDate
+            holder.textViewEndDate.setText("End Date: " + formattedEndDate);
+        } else {
+            holder.textViewEndDate.setText("No end date set");
+        }
     }
 
     @Override
@@ -47,6 +55,7 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.HabitViewHol
 
 
     public static class HabitViewHolder extends RecyclerView.ViewHolder {
+        TextView textViewEndDate;
         TextView textViewHabitName;
         TextView textViewHabitDescription;
 
@@ -54,6 +63,7 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.HabitViewHol
             super(itemView);
             textViewHabitName = itemView.findViewById(R.id.text_view_habit_name);
             textViewHabitDescription = itemView.findViewById(R.id.text_view_habit_description);
+            textViewEndDate = itemView.findViewById(R.id.text_view_end_date);
         }
     }
 }
