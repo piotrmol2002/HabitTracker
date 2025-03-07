@@ -76,7 +76,7 @@ public class AddHabitActivity extends AppCompatActivity {
         }
 
         int selectedFrequency = FREQUENCY_VALUES[spinnerFrequency.getSelectedItemPosition()];
-        Habit newHabit = new Habit(habitName, false, selectedFrequency, habitDescription, endDate);
+        Habit newHabit = new Habit(habitName, selectedFrequency, habitDescription, endDate);
 
 
         Executors.newSingleThreadExecutor().execute(() -> {
