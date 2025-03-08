@@ -14,7 +14,6 @@ import com.example.habittracker.data.Habit;
 import com.example.habittracker.data.HabitDao;
 import com.example.habittracker.data.HabitDatabase;
 import com.example.habittracker.data.HabitDay;
-import com.example.habittracker.data.HabitDayDao;
 
 import org.threeten.bp.LocalDate;
 
@@ -94,18 +93,17 @@ public class AddHabitActivity extends AppCompatActivity {
 
         HabitDatabase db = HabitDatabase.getInstance(this);
         HabitDao habitDao = db.habitDao();
-        HabitDayDao habitDayDao = db.habitDayDao();
 
-        long habitId = habitDao.insertHabit(newHabit);
-
-        List<HabitDay> habitDays = generateHabitDays((int) habitId, LocalDate.now(), endDate, selectedFrequency);
-
-        // Zapisujemy listę dni w bazie
-        habitDayDao.insertHabitDays(habitDays);
-
-
+        // zapis w bazie danych
         Executors.newSingleThreadExecutor().execute(() -> {
-            HabitDatabase.getInstance(this).habitDao().insertHabit(newHabit);
+
+            //generowanie listy w osobnym watku
+            long habitId = habitDao.insertHabit(newHabit);
+            List<HabitDay> habitDays = generateHabitDays((int) habitId, LocalDate.now(), endDate, selectedFrequency);
+
+            //zapisuje tylko dni nawykow w bazie - nawyki zapisane wyzej
+            HabitDatabase.getInstance(this).habitDayDao().insertHabitDays(habitDays);
+
             runOnUiThread(() -> {
                 Toast.makeText(this, "Nawyk dodany!", Toast.LENGTH_SHORT).show();
                 finish();
