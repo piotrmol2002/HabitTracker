@@ -3,6 +3,7 @@ package com.example.habittracker.ui;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
@@ -32,6 +33,7 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.HabitViewHol
         holder.textViewHabitName.setText(habit.getName());
         holder.textViewHabitDescription.setText(habit.getDescription());
         holder.textViewHabitName.setText(habit.getName());
+        holder.checkbox.setChecked(false);
 
         if (habit.getEndDate() != null) {
             String formattedEndDate = habit.getEndDate().toString(); // Zakładając, że masz endDate jako LocalDate
@@ -53,17 +55,18 @@ public class HabitAdapter extends RecyclerView.Adapter<HabitAdapter.HabitViewHol
         diffResult.dispatchUpdatesTo(this);
     }
 
-
     public static class HabitViewHolder extends RecyclerView.ViewHolder {
         TextView textViewEndDate;
         TextView textViewHabitName;
         TextView textViewHabitDescription;
+        CheckBox checkbox;
 
         public HabitViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewHabitName = itemView.findViewById(R.id.text_view_habit_name);
             textViewHabitDescription = itemView.findViewById(R.id.text_view_habit_description);
             textViewEndDate = itemView.findViewById(R.id.text_view_end_date);
+            checkbox = itemView.findViewById(R.id.checkbox_habit);
         }
     }
 }
