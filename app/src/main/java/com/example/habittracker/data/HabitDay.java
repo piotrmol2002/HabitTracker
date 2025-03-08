@@ -1,15 +1,29 @@
 package com.example.habittracker.data;
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 import org.threeten.bp.LocalDate;
 
-@Entity(tableName = "habit_days")
+@Entity(tableName = "habit_days",
+        foreignKeys = @ForeignKey(entity = Habit.class,
+                parentColumns = "id",
+                childColumns = "habitId",
+                onDelete = ForeignKey.CASCADE),
+        indices = {@Index("habitId")})
 public class HabitDay {
     @PrimaryKey(autoGenerate = true)
-    private int id;
-    private int habitId;
-    private LocalDate date;
-    private boolean isComplete;
+    public int id;
+
+    @ColumnInfo(name = "habitId")
+    public int habitId;
+
+    @ColumnInfo(name = "date")
+    public LocalDate date;
+
+    @ColumnInfo(name = "isComplete")
+    public boolean isComplete;
 
     public HabitDay(int habitId, LocalDate date, boolean isComplete) {
         this.habitId = habitId;
