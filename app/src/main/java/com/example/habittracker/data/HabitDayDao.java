@@ -20,4 +20,7 @@ public interface HabitDayDao {
 
     @Query("UPDATE habit_days SET isComplete = :isComplete WHERE habitId = :habitId AND date = :date")
     void updateCompletionStatus(int habitId, LocalDate date, boolean isComplete);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertHabitDays(List<HabitDay> habitDays);
 }

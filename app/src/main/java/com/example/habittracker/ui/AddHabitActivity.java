@@ -11,8 +11,15 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.habittracker.R;
 import com.example.habittracker.data.Habit;
+import com.example.habittracker.data.HabitDao;
 import com.example.habittracker.data.HabitDatabase;
+import com.example.habittracker.data.HabitDay;
+import com.example.habittracker.data.HabitDayDao;
 
+import org.threeten.bp.LocalDate;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executors;
 
 public class AddHabitActivity extends AppCompatActivity {
@@ -20,12 +27,13 @@ public class AddHabitActivity extends AppCompatActivity {
     private Spinner spinnerFrequency;
     private static final int[] FREQUENCY_VALUES = {1, 2, 3, 4, 5, 6, 7, 14, 28};
     private EditText editTextHabitDescription;
-    private org.threeten.bp.LocalDate selectedEndDate;
+    private LocalDate selectedEndDate;
     private TextView textViewEndDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_add_habit);
 
         editTextHabitName = findViewById(R.id.edit_text_habit_name);
@@ -75,8 +83,25 @@ public class AddHabitActivity extends AppCompatActivity {
             return;
         }
 
+        if (endDate == null) {
+            Toast.makeText(this, "Wybierz datę zakończenia!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         int selectedFrequency = FREQUENCY_VALUES[spinnerFrequency.getSelectedItemPosition()];
+
         Habit newHabit = new Habit(habitName, selectedFrequency, habitDescription, endDate);
+
+        HabitDatabase db = HabitDatabase.getInstance(this);
+        HabitDao habitDao = db.habitDao();
+        HabitDayDao habitDayDao = db.habitDayDao();
+
+        long habitId = habitDao.insertHabit(newHabit);
+
+        List<HabitDay> habitDays = generateHabitDays((int) habitId, LocalDate.now(), endDate, selectedFrequency);
+
+        // Zapisujemy listę dni w bazie
+        habitDayDao.insertHabitDays(habitDays);
 
 
         Executors.newSingleThreadExecutor().execute(() -> {
@@ -87,4 +112,16 @@ public class AddHabitActivity extends AppCompatActivity {
             });
         });
     }
+
+    private List<HabitDay> generateHabitDays(int habitId, LocalDate startDate, LocalDate endDate, int frequency) {
+        List<HabitDay> habitDays = new ArrayList<>();
+        LocalDate currentDate = startDate;
+
+        while (!currentDate.isAfter(endDate)) {
+            habitDays.add(new HabitDay(habitId, currentDate, false)); // Domyślnie isComplete = false
+            currentDate = currentDate.plusDays(frequency);
+        }
+        return habitDays;
+    }
+
 }

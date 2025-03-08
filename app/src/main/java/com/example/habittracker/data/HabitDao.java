@@ -11,7 +11,7 @@ import java.util.List;
 @Dao
 public interface HabitDao {
     @Insert
-    void insertHabit(Habit habit);
+    long insertHabit(Habit habit);
 
     @Update
     void update(Habit habit);
